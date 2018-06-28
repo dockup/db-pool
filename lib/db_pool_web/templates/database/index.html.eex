@@ -1,0 +1,32 @@
+<h2>Listing Databases</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Url</th>
+      <th>Status</th>
+      <th>Import log</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for database <- @databases do %>
+    <tr>
+      <td><%= database.name %></td>
+      <td><%= database.url %></td>
+      <td><%= database.status %></td>
+      <td><%= database.import_log %></td>
+
+      <td class="text-right">
+        <span><%= link "Show", to: database_path(@conn, :show, database), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Edit", to: database_path(@conn, :edit, database), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Delete", to: database_path(@conn, :delete, database), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Database", to: database_path(@conn, :new) %></span>

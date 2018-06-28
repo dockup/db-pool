@@ -1,0 +1,5 @@
+<h2>New Database</h2>
+
+<%= render "form.html", Map.put(assigns, :action, database_path(@conn, :create)) %>
+
+<span><%= link "Back", to: database_path(@conn, :index) %></span>
