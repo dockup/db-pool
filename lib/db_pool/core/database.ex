@@ -12,10 +12,23 @@ defmodule DbPool.Core.Database do
     timestamps()
   end
 
+  @statuses ["importing", "imported",
+             "reserved", "released",
+             "deleting", "deleted"]
+
   @doc false
   def changeset(database, attrs) do
     database
-    |> cast(attrs, [:name, :url, :status, :import_log])
-    |> validate_required([:name, :url, :status, :import_log])
+    |> cast(attrs, [:name, :url, :import_log])
+    |> validate_required([:name, :url, :import_log])
+    |> unique_constraint(:name)
+    |> unique_constraint(:url)
+  end
+
+  @doc false
+  def status_changeset(database, status) do
+    database
+    |> cast(%{status: status}, [:status])
+    |> validate_inclusion(:status, @statuses)
   end
 end

@@ -18,12 +18,6 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :status, class: "control-label" %>
-    <%= text_input f, :status, class: "form-control" %>
-    <%= error_tag f, :status %>
-  </div>
-
-  <div class="form-group">
     <%= label f, :import_log, class: "control-label" %>
     <%= textarea f, :import_log, class: "form-control" %>
     <%= error_tag f, :import_log %>
