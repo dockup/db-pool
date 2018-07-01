@@ -25,4 +25,5 @@
 </ul>
 
 <span><%= link "Edit", to: database_path(@conn, :edit, @database) %></span>
+<span><%= link "Import", to: database_import_path(@conn, :import_dump, @database), method: :put %></span>
 <span><%= link "Back", to: database_path(@conn, :index) %></span>

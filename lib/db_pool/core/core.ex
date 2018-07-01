@@ -7,6 +7,7 @@ defmodule DbPool.Core do
   alias DbPool.Repo
 
   alias DbPool.Core.Database
+  alias DbPool.Core.Importer
 
   @doc """
   Returns the list of databases.
@@ -70,6 +71,21 @@ defmodule DbPool.Core do
   def update_database(%Database{} = database, attrs) do
     database
     |> Database.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Imports a database.
+
+  ## Examples
+
+      iex> import_database(database)
+      {:ok, %Database{}}
+
+  """
+  def import_dump_to_database(%Database{} = database) do
+    database
+    |> Importer.run()
     |> Repo.update()
   end
 

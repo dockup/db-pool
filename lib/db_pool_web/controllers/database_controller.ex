@@ -5,6 +5,7 @@ defmodule DbPoolWeb.DatabaseController do
   alias DbPool.Core.Database
 
   def index(conn, _params) do
+    IO.inspect Application.get_all_env(:db_pool)
     databases = Core.list_databases()
     render(conn, "index.html", databases: databases)
   end
@@ -46,6 +47,21 @@ defmodule DbPoolWeb.DatabaseController do
         |> redirect(to: database_path(conn, :show, database))
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", database: database, changeset: changeset)
+    end
+  end
+
+  def import_dump(conn, %{"database_id" => id}) do
+    database = Core.get_database!(id)
+
+    case Core.import_dump_to_database(database) do
+      {:ok, database} ->
+        conn
+        |> put_flash(:info, "Database queued for importing.")
+        |> redirect(to: database_path(conn, :show, database))
+      {:error, _} ->
+        conn
+        |> put_flash(:info, "Failed to import, not sure why!")
+        |> redirect(to: database_path(conn, :show, database))
     end
   end
 
