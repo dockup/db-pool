@@ -7,9 +7,7 @@ defmodule DbPool.Config do
 
   defp configs do
     [
-      {"DB_POOL_SQL_SERVER_URL", :sql_server_url, :string},
-      {"DB_POOL_SQL_DUMP_URL", :sql_dump_url, :string},
-      {"DB_POOL_SQL_DB_PREFIX", :sql_db_prefix, :string}
+      {"DB_POOL_SQL_DUMP_URL", :sql_dump_url, :string}
     ]
   end
 

@@ -13,7 +13,6 @@ defmodule DbPool.Core.Database do
   end
 
   @statuses ["importing", "imported",
-             "reserved", "released",
              "deleting", "deleted"]
 
   @doc false
