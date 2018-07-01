@@ -5,7 +5,6 @@ defmodule DbPoolWeb.DatabaseController do
   alias DbPool.Core.Database
 
   def index(conn, _params) do
-    IO.inspect Application.get_all_env(:db_pool)
     databases = Core.list_databases()
     render(conn, "index.html", databases: databases)
   end

@@ -8,6 +8,7 @@ defmodule DbPool.Core do
 
   alias DbPool.Core.Database
   alias DbPool.Core.Importer
+  alias DbPool.Core.Deleter
 
   @doc """
   Returns the list of databases.
@@ -102,7 +103,9 @@ defmodule DbPool.Core do
 
   """
   def delete_database(%Database{} = database) do
-    Repo.delete(database)
+    database
+    |> Deleter.run()
+    |> Repo.update()
   end
 
   @doc """
