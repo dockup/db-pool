@@ -24,7 +24,7 @@ COPY mix.lock .
 RUN mix deps.get --force --only prod
 COPY . ./
 COPY ./config/prod.secret.exs.example config/prod.secret.exs
-COPY --from=staticassets /db-pool/priv/static /priv/static
+COPY --from=staticassets /db-pool/priv/static ./priv/static
 
 ENV MIX_ENV prod
 RUN mix deps.get --only prod && \
