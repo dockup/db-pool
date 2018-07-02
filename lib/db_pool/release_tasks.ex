@@ -19,12 +19,14 @@ defmodule DbPool.ReleaseTasks do
     # Start apps necessary for executing migrations
     Enum.each(@start_apps, &Application.ensure_all_started/1)
 
+    # create databases
+    create_databases()
+
     # Start the Repo(s) for db_pool
     IO.puts "Starting repos.."
     Enum.each(repos(), &(&1.start_link(pool_size: 1)))
 
-    # create and run migrations
-    create_databases()
+    # run migrations
     migrate()
 
     # Run seed script
@@ -37,7 +39,8 @@ defmodule DbPool.ReleaseTasks do
 
   def create_databases() do
     Enum.each(repos(), fn (repo) ->
-      repo.__adapter__.storage_up(repo.config)
+      IO.inspect repo.config
+      IO.inspect repo.__adapter__.storage_up(repo.config)
     end)
   end
 
