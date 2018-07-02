@@ -8,16 +8,12 @@ defmodule DbPool.ReleaseTasks do
     :ecto
   ]
 
-  def db_pool, do: Application.get_application(__MODULE__)
-
-  def repos, do: Application.get_env(db_pool(), :ecto_repos, [])
+  def repos, do: Application.get_env(:db_pool, :ecto_repos, [])
 
   def seed do
-    me = db_pool()
-
-    IO.puts "Loading #{me}.."
+    IO.puts "Loading :db_pool.."
     # Load the code for db_pool, but don't start it
-    :ok = Application.load(me)
+    :ok = Application.load(:db_pool)
 
     IO.puts "Starting dependencies.."
     # Start apps necessary for executing migrations
@@ -27,7 +23,8 @@ defmodule DbPool.ReleaseTasks do
     IO.puts "Starting repos.."
     Enum.each(repos(), &(&1.start_link(pool_size: 1)))
 
-    # Run migrations
+    # create and run migrations
+    create_databases()
     migrate()
 
     # Run seed script
@@ -36,6 +33,12 @@ defmodule DbPool.ReleaseTasks do
     # Signal shutdown
     IO.puts "Success!"
     :init.stop()
+  end
+
+  def create_databases() do
+    Enum.each(repos(), fn (repo) ->
+      repo.__adapter__.storage_up(repo.config)
+    end)
   end
 
   def migrate, do: Enum.each(repos(), &run_migrations_for/1)
