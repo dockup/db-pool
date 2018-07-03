@@ -16,7 +16,7 @@ defmodule DbPoolWeb.Router do
   scope "/", DbPoolWeb do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
+    get "/", DatabaseController, :index
     resources "/databases", DatabaseController do
       put "/import", DatabaseController, :import_dump, as: :import
     end
