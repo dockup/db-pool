@@ -9,5 +9,6 @@ $fa-font-path: "/fonts";
 // Disable the widescreen, fullhd and desktop breakpoint
 $widescreen-enabled: false;
 $fullhd-enabled: false;
+$primary: #135DFB;
 
 @import "bulma";

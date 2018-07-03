@@ -5,25 +5,37 @@
     </div>
   <% end %>
 
-  <div class="form-group">
-    <%= label f, :name, class: "control-label" %>
-    <%= text_input f, :name, class: "form-control" %>
+  <div class="field">
+    <%= label f, :name, class: "label" %>
+    <div class="control">
+      <%= text_input f, :name, class: "input" %>
+    </div>
     <%= error_tag f, :name %>
   </div>
 
-  <div class="form-group">
-    <%= label f, :url, class: "control-label" %>
-    <%= text_input f, :url, class: "form-control" %>
+  <div class="field">
+    <%= label f, :url, class: "label" %>
+    <div class="control">
+      <%= text_input f, :url, class: "input" %>
+    </div>
     <%= error_tag f, :url %>
   </div>
 
-  <div class="form-group">
-    <%= label f, :import_log, class: "control-label" %>
-    <%= textarea f, :import_log, class: "form-control" %>
+  <div class="field">
+    <%= label f, :import_log, class: "label" %>
+    <div class="control">
+      <%= textarea f, :import_log, class: "input" %>
+    </div>
     <%= error_tag f, :import_log %>
   </div>
 
-  <div class="form-group">
-    <%= submit "Submit", class: "btn btn-primary" %>
+  <div class="field is-grouped">
+    <div class="control">
+      <%= submit "Submit", class: "button is-primary" %>
+    </div>
+    <div class="control">
+      <%= link "Cancel", to: database_path(@conn, :index),
+                         class: "button is-text" %>
+    </div>
   </div>
 <% end %>

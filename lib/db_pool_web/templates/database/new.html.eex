@@ -1,5 +1,4 @@
-<h2>New Database</h2>
+<h2 class="title">Add new database</h2>
+<hr>
 
 <%= render "form.html", Map.put(assigns, :action, database_path(@conn, :create)) %>
-
-<span><%= link "Back", to: database_path(@conn, :index) %></span>

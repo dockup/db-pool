@@ -1,5 +1,0 @@
-<h2>Edit Database</h2>
-
-<%= render "form.html", Map.put(assigns, :action, database_path(@conn, :update, @database)) %>
-
-<span><%= link "Back", to: database_path(@conn, :index) %></span>

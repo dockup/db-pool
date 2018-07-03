@@ -2,7 +2,7 @@
   Databases
   <small>
     <%= link "New Database", to: database_path(@conn, :new),
-        class: "is-pulled-right button is-link" %>
+        class: "is-pulled-right button is-primary is-outlined" %>
   </small>
 </h2>
 

@@ -26,8 +26,16 @@
       <div class="container">
         <div class="columns">
           <div class="column">
-            <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-            <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+            <%= if get_flash(@conn, :info) do %>
+              <div class="notification is-success" role="alert">
+                <%= get_flash(@conn, :info) %>
+              </div>
+            <% end %>
+            <%= if get_flash(@conn, :error) do %>
+              <div class="notification is-danger" role="alert">
+                  <%= get_flash(@conn, :error) %>
+              </div>
+            <% end %>
 
             <%= render @view_module, @view_template, assigns %>
           </div>
@@ -38,7 +46,16 @@
     <footer class="footer">
       <div class="content has-text-centered">
         <p>
-          Built with love by <strong><a href="codemancers.com">Codemancers</a></strong>
+          Built with
+          <span class="has-text-danger">
+            <i class="fas fa-heart"></i>
+          </span>
+          by
+          <strong>
+            <a href="https://www.codemancers.com" class="has-text-primary">
+              Codemancers
+            </a>
+          </strong>
         </p>
       </div>
     </footer>

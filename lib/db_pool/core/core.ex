@@ -20,7 +20,9 @@ defmodule DbPool.Core do
 
   """
   def list_databases do
-    Repo.all(Database)
+    Database
+    |> Ecto.Query.order_by([desc: :id])
+    |> Repo.all
   end
 
   @doc """

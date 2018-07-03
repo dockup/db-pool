@@ -19,33 +19,9 @@ defmodule DbPoolWeb.DatabaseController do
       {:ok, database} ->
         conn
         |> put_flash(:info, "Database created successfully.")
-        |> redirect(to: database_path(conn, :show, database))
+        |> redirect(to: database_path(conn, :index))
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
-    end
-  end
-
-  def show(conn, %{"id" => id}) do
-    database = Core.get_database!(id)
-    render(conn, "show.html", database: database)
-  end
-
-  def edit(conn, %{"id" => id}) do
-    database = Core.get_database!(id)
-    changeset = Core.change_database(database)
-    render(conn, "edit.html", database: database, changeset: changeset)
-  end
-
-  def update(conn, %{"id" => id, "database" => database_params}) do
-    database = Core.get_database!(id)
-
-    case Core.update_database(database, database_params) do
-      {:ok, database} ->
-        conn
-        |> put_flash(:info, "Database updated successfully.")
-        |> redirect(to: database_path(conn, :show, database))
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", database: database, changeset: changeset)
     end
   end
 
@@ -56,11 +32,11 @@ defmodule DbPoolWeb.DatabaseController do
       {:ok, database} ->
         conn
         |> put_flash(:info, "Database queued for importing.")
-        |> redirect(to: database_path(conn, :show, database))
+        |> redirect(to: database_path(conn, :index))
       {:error, _} ->
         conn
         |> put_flash(:info, "Failed to import, not sure why!")
-        |> redirect(to: database_path(conn, :show, database))
+        |> redirect(to: database_path(conn, :index))
     end
   end
 
