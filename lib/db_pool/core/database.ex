@@ -4,10 +4,8 @@ defmodule DbPool.Core.Database do
 
 
   schema "databases" do
-    field :import_log, :string
     field :name, :string
     field :status, :string
-    field :url, :string
 
     timestamps()
   end
@@ -18,10 +16,9 @@ defmodule DbPool.Core.Database do
   @doc false
   def changeset(database, attrs) do
     database
-    |> cast(attrs, [:name, :url, :import_log])
-    |> validate_required([:name, :url, :import_log])
+    |> cast(attrs, [:name])
+    |> validate_required([:name])
     |> unique_constraint(:name)
-    |> unique_constraint(:url)
   end
 
   @doc false

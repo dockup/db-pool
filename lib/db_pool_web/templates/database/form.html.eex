@@ -13,22 +13,6 @@
     <%= error_tag f, :name %>
   </div>
 
-  <div class="field">
-    <%= label f, :url, class: "label" %>
-    <div class="control">
-      <%= text_input f, :url, class: "input" %>
-    </div>
-    <%= error_tag f, :url %>
-  </div>
-
-  <div class="field">
-    <%= label f, :import_log, class: "label" %>
-    <div class="control">
-      <%= textarea f, :import_log, class: "input" %>
-    </div>
-    <%= error_tag f, :import_log %>
-  </div>
-
   <div class="field is-grouped">
     <div class="control">
       <%= submit "Submit", class: "button is-primary" %>
