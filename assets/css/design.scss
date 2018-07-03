@@ -1,0 +1,13 @@
+// Font awesome customizations and inclusions
+$fa-font-path: "/fonts";
+
+@import "fontawesome";
+@import "fa-brands";
+@import "fa-regular";
+@import "fa-solid";
+
+// Disable the widescreen, fullhd and desktop breakpoint
+$widescreen-enabled: false;
+$fullhd-enabled: false;
+
+@import "bulma";

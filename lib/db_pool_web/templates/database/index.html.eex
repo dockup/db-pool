@@ -1,32 +1,34 @@
-<h2>Listing Databases</h2>
+<h2 class="is-size-3">
+  Databases
+  <small>
+    <%= link "New Database", to: database_path(@conn, :new),
+        class: "is-pulled-right button is-link" %>
+  </small>
+</h2>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Url</th>
-      <th>Status</th>
-      <th>Import log</th>
+<hr>
 
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
 <%= for database <- @databases do %>
-    <tr>
-      <td><%= database.name %></td>
-      <td><%= database.url %></td>
-      <td><%= database.status %></td>
-      <td><%= database.import_log %></td>
-
-      <td class="text-right">
-        <span><%= link "Show", to: database_path(@conn, :show, database), class: "btn btn-default btn-xs" %></span>
-        <span><%= link "Edit", to: database_path(@conn, :edit, database), class: "btn btn-default btn-xs" %></span>
-        <span><%= link "Delete", to: database_path(@conn, :delete, database), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
-      </td>
-    </tr>
+  <div class="box">
+    <span class="icon <%= fa_icon_color_for(database) %>">
+      <i class="fas <%= fa_icon_for(database) %>" title="<%= database.status%>"></i>
+    </span>
+    <%= database.name %>
+    <%= if (database.status == "created") do %>
+      <span class="is-pulled-right">
+        <%= link to: database_import_path(@conn, :import_dump, database),
+                 method: :put, class: "has-text-info" do %>
+          <i class="fas fa-file-import"></i> Import
+        <% end %>
+      </span>
+    <% end %>
+    <%= if (database.status == "imported") do %>
+      <span class="is-pulled-right">
+        <%= link to: database_path(@conn, :delete, database),
+                 method: :delete, class: "has-text-danger" do %>
+          <i class="fas fa-trash"></i> Delete
+        <% end %>
+      </span>
+    <% end %>
+  </div>
 <% end %>
-  </tbody>
-</table>
-
-<span><%= link "New Database", to: database_path(@conn, :new) %></span>

@@ -47,6 +47,20 @@ exports.config = {
     babel: {
       // Do not use ES6 compiler in vendor code
       ignore: [/vendor/]
+    },
+    copycat: {
+      "fonts": [
+        "node_modules/@fortawesome/fontawesome-free/webfonts"
+      ]
+    },
+    sass: {
+      options: {
+        includePaths: [
+          "node_modules/@fortawesome/fontawesome-free/scss",
+          "node_modules/bulma"
+        ],
+        precision: 8
+      }
     }
   },
 

@@ -12,24 +12,37 @@
   </head>
 
   <body>
-    <div class="container">
-      <header class="header">
-        <nav role="navigation">
-          <ul class="nav nav-pills pull-right">
-            <li><a href="http://www.phoenixframework.org/docs">Get Started</a></li>
-          </ul>
-        </nav>
-        <span class="logo"></span>
-      </header>
+    <section class="hero is-primary">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">
+            <%= link "DB-Pool", to: database_path(@conn, :index) %>
+          </h1>
+        </div>
+      </div>
+    </section>
 
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+    <section class="section is-flex-tablet-only">
+      <div class="container">
+        <div class="columns">
+          <div class="column">
+            <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+            <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 
-      <main role="main">
-        <%= render @view_module, @view_template, assigns %>
-      </main>
+            <%= render @view_module, @view_template, assigns %>
+          </div>
+        </div>
+      </div> <!-- /container -->
+    </section>
 
-    </div> <!-- /container -->
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          Built with love by <strong><a href="codemancers.com">Codemancers</a></strong>
+        </p>
+      </div>
+    </footer>
+
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>
