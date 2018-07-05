@@ -16,6 +16,7 @@ defmodule DbPool.Application do
       supervisor(DbPoolWeb.Endpoint, []),
       # Start your own worker by calling: DbPool.Worker.start_link(arg1, arg2, arg3)
       # worker(DbPool.Worker, [arg1, arg2, arg3]),
+      worker(DbPool.Core.Scheduler, [])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

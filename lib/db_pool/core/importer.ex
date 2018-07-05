@@ -5,8 +5,6 @@ defmodule DbPool.Core.Importer do
   require Logger
 
   def run(%Database{} = database) do
-    # TODO: We can put this task under supervisor later
-    Task.start(__MODULE__, :start_importing, [database])
     Database.status_changeset(database, "importing")
   end
 
@@ -30,7 +28,7 @@ defmodule DbPool.Core.Importer do
     end
 
     # download and extract the dump zip file
-    File.mkdir!(tmp_directory)
+    File.mkdir_p!(tmp_directory)
     {_, 0} = System.cmd("wget", [sql_dump_url], stderr_to_stdout: true,
                                                 cd: tmp_directory)
 
