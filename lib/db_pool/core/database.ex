@@ -27,4 +27,13 @@ defmodule DbPool.Core.Database do
     |> cast(%{status: status}, [:status])
     |> validate_inclusion(:status, @statuses)
   end
+
+  @doc false
+  def bulk_insert_changeset(database, attrs) do
+    database
+    |> cast(attrs, [:name, :status])
+    |> validate_required([:name, :status])
+    |> unique_constraint(:name)
+    |> validate_inclusion(:status, @statuses)
+  end
 end

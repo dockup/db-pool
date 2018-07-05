@@ -1,9 +1,15 @@
 <h2 class="is-size-3">
   Databases
-  <small>
-    <%= link "New Database", to: database_path(@conn, :new),
-        class: "is-pulled-right button is-primary is-outlined" %>
-  </small>
+  <span class="field is-grouped is-pulled-right">
+    <p class="control">
+      <%= link "Need 10 dockup dbs", to: database_bulk_path(@conn, :bulk),
+          method: :post, class: "button is-primary is-outlined" %>
+    </p>
+    <p class="control">
+      <%= link "New Database", to: database_path(@conn, :new),
+          class: "button is-primary is-outlined" %>
+    </p>
+  </span>
 </h2>
 
 <hr>

@@ -7,6 +7,7 @@ defmodule DbPool.Core do
   alias DbPool.Repo
 
   alias DbPool.Core.Database
+  alias DbPool.Core.BulkCreator
   alias DbPool.Core.Importer
   alias DbPool.Core.Deleter
 
@@ -121,5 +122,21 @@ defmodule DbPool.Core do
   """
   def change_database(%Database{} = database) do
     Database.changeset(database, %{})
+  end
+
+  @doc """
+  Creates bunch of databases right away!
+
+  ## Examples
+
+      iex> create_in_bulk()
+      {:ok, [%Database{}]}
+
+      iex> create_bulk()
+      {:error, [%Ecto.Changeset{}]}
+
+  """
+  def create_in_bulk() do
+    BulkCreator.run()
   end
 end

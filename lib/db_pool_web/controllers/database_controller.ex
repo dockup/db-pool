@@ -16,7 +16,7 @@ defmodule DbPoolWeb.DatabaseController do
 
   def create(conn, %{"database" => database_params}) do
     case Core.create_database(database_params) do
-      {:ok, database} ->
+      {:ok, _database} ->
         conn
         |> put_flash(:info, "Database created successfully.")
         |> redirect(to: database_path(conn, :index))
@@ -29,7 +29,7 @@ defmodule DbPoolWeb.DatabaseController do
     database = Core.get_database!(id)
 
     case Core.import_dump_to_database(database) do
-      {:ok, database} ->
+      {:ok, _database} ->
         conn
         |> put_flash(:info, "Database queued for importing.")
         |> redirect(to: database_path(conn, :index))
@@ -47,5 +47,18 @@ defmodule DbPoolWeb.DatabaseController do
     conn
     |> put_flash(:info, "Database deleted successfully.")
     |> redirect(to: database_path(conn, :index))
+  end
+
+  def bulk(conn, _params) do
+    case Core.create_in_bulk() do
+      {:ok, _databases} ->
+        conn
+        |> put_flash(:info, "Databases created successfully.")
+        |> redirect(to: database_path(conn, :index))
+      {:error, %Ecto.Changeset{} = _changeset} ->
+        conn
+        |> put_flash(:error, "Failed to create :(")
+        |> redirect(to: database_path(conn, :index))
+    end
   end
 end
