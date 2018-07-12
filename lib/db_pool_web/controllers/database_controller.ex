@@ -4,9 +4,11 @@ defmodule DbPoolWeb.DatabaseController do
   alias DbPool.Core
   alias DbPool.Core.Database
 
-  def index(conn, _params) do
-    databases = Core.list_databases()
-    render(conn, "index.html", databases: databases)
+  def index(conn, params) do
+    page = String.to_integer(params["page"] || "1")
+
+    databases = Core.list_databases(page)
+    render(conn, "index.html", databases: databases, page: page)
   end
 
   def new(conn, _params) do

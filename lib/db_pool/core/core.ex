@@ -11,6 +11,8 @@ defmodule DbPool.Core do
   alias DbPool.Core.Importer
   alias DbPool.Core.Deleter
 
+  @limit 25
+
   @doc """
   Returns the list of databases.
 
@@ -20,8 +22,10 @@ defmodule DbPool.Core do
       [%Database{}, ...]
 
   """
-  def list_databases do
+  def list_databases(page) do
     Database
+    |> Ecto.Query.offset(^((page - 1) * @limit))
+    |> Ecto.Query.limit(@limit)
     |> Ecto.Query.order_by([desc: :id])
     |> Repo.all
   end

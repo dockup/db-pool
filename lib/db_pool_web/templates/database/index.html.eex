@@ -40,3 +40,18 @@
     </span>
   </div>
 <% end %>
+
+<%= if (@page > 1) do %>
+  <%= link to: database_path(@conn, :index, page: @page - 1),
+      class: "button is-light is-pulled-left" do %>
+    <span class="icon"><i class="fas fa-arrow-left"></i></span>
+    <span>Newer</span>
+  <% end %>
+<% end %>
+<%= if length(@databases) > 0 do %>
+  <%= link to: database_path(@conn, :index, page: @page + 1),
+      class: "button is-light is-pulled-right" do %>
+    <span>Older</span>
+    <span class="icon"><i class="fas fa-arrow-right"></i></span>
+  <% end %>
+<% end %>
