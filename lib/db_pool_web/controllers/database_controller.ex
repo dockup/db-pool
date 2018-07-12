@@ -6,9 +6,12 @@ defmodule DbPoolWeb.DatabaseController do
 
   def index(conn, params) do
     page = String.to_integer(params["page"] || "1")
+    status = params["status"] || "all"
 
-    databases = Core.list_databases(page)
-    render(conn, "index.html", databases: databases, page: page)
+    databases = Core.list_databases(status, page)
+    render(conn, "index.html", databases: databases,
+                               page: page,
+                               status: status)
   end
 
   def new(conn, _params) do
@@ -27,28 +30,34 @@ defmodule DbPoolWeb.DatabaseController do
     end
   end
 
-  def import_dump(conn, %{"database_id" => id}) do
+  def import_dump(conn, %{"database_id" => id} = params) do
+    page = String.to_integer(params["page"] || "1")
+    status = params["status"] || "all"
+
     database = Core.get_database!(id)
 
     case Core.import_dump_to_database(database) do
       {:ok, _database} ->
         conn
         |> put_flash(:info, "Database queued for importing.")
-        |> redirect(to: database_path(conn, :index))
+        |> redirect(to: database_path(conn, :index, page: page, status: status))
       {:error, _} ->
         conn
         |> put_flash(:info, "Failed to import, not sure why!")
-        |> redirect(to: database_path(conn, :index))
+        |> redirect(to: database_path(conn, :index, page: page, status: status))
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{"id" => id} = params) do
+    page = String.to_integer(params["page"] || "1")
+    status = params["status"] || "all"
+
     database = Core.get_database!(id)
     {:ok, _database} = Core.delete_database(database)
 
     conn
     |> put_flash(:info, "Database deleted successfully.")
-    |> redirect(to: database_path(conn, :index))
+    |> redirect(to: database_path(conn, :index, page: page, status: status))
   end
 
   def bulk(conn, _params) do

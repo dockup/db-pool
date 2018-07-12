@@ -22,8 +22,16 @@ defmodule DbPool.Core do
       [%Database{}, ...]
 
   """
-  def list_databases(page) do
-    Database
+  def list_databases(status, page) do
+    filtered =
+    if status == "all" do
+      Database
+    else
+      Database
+      |> Ecto.Query.where(status: ^status)
+    end
+
+    filtered
     |> Ecto.Query.offset(^((page - 1) * @limit))
     |> Ecto.Query.limit(@limit)
     |> Ecto.Query.order_by([desc: :id])

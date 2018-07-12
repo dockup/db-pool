@@ -14,6 +14,29 @@
 
 <hr>
 
+<div class="tabs is-boxed">
+  <ul>
+    <li class="<%= if @status == "all", do: "is-active" %>">
+      <%= link "All", to: database_path(@conn, :index, status: "all") %>
+    </li>
+    <li class="<%= if @status == "created", do: "is-active" %>">
+      <%= link "Created", to: database_path(@conn, :index, status: "created") %>
+    </li>
+    <li class="<%= if @status == "importing", do: "is-active" %>">
+      <%= link "Importing", to: database_path(@conn, :index, status: "importing") %>
+    </li>
+    <li class="<%= if @status == "imported", do: "is-active" %>">
+      <%= link "Imported", to: database_path(@conn, :index, status: "imported") %>
+    </li>
+    <li class="<%= if @status == "deleting", do: "is-active" %>">
+      <%= link "Deleting", to: database_path(@conn, :index, status: "deleting") %>
+    </li>
+    <li class="<%= if @status == "deleted", do: "is-active" %>">
+      <%= link "Deleted", to: database_path(@conn, :index, status: "deleted") %>
+    </li>
+  </ul>
+</div>
+
 <%= for database <- @databases do %>
   <div class="box">
     <span class="icon <%= fa_icon_color_for(database) %>">
@@ -23,7 +46,8 @@
     <span class="field is-grouped is-pulled-right">
       <%= if (database.status == "created") do %>
         <p class="control">
-          <%= link to: database_import_path(@conn, :import_dump, database),
+          <%= link to: database_import_path(@conn, :import_dump, database,
+                                            status: "importing", page: @page),
                    method: :put, class: "has-text-info" do %>
             <i class="fas fa-file-import"></i> Import
           <% end %>
@@ -31,7 +55,8 @@
       <% end %>
       <%= if database.status != "deleted" do %>
         <p class="control">
-          <%= link to: database_path(@conn, :delete, database),
+          <%= link to: database_path(@conn, :delete, database,
+                                     status: "deleting", page: @page),
                    method: :delete, class: "has-text-danger" do %>
             <i class="fas fa-trash"></i> Delete
           <% end %>
@@ -42,14 +67,14 @@
 <% end %>
 
 <%= if (@page > 1) do %>
-  <%= link to: database_path(@conn, :index, page: @page - 1),
+  <%= link to: database_path(@conn, :index, page: @page - 1, status: @status),
       class: "button is-light is-pulled-left" do %>
     <span class="icon"><i class="fas fa-arrow-left"></i></span>
     <span>Newer</span>
   <% end %>
 <% end %>
 <%= if length(@databases) > 0 do %>
-  <%= link to: database_path(@conn, :index, page: @page + 1),
+  <%= link to: database_path(@conn, :index, page: @page + 1, status: @status),
       class: "button is-light is-pulled-right" do %>
     <span>Older</span>
     <span class="icon"><i class="fas fa-arrow-right"></i></span>
