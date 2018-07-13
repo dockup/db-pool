@@ -68,7 +68,7 @@
         <p class="control">
           <%= link to: database_import_path(@conn, :import_dump, database,
                                             status: "importing", page: @page),
-                   method: :put, class: "has-text-info" do %>
+                   method: :put, class: "has-text-grey-light is-text" do %>
             <i class="fas fa-file-import"></i> Import
           <% end %>
         </p>
@@ -77,7 +77,7 @@
         <p class="control">
           <%= link to: database_path(@conn, :delete, database,
                                      status: "deleting", page: @page),
-                   method: :delete, class: "has-text-danger" do %>
+                   method: :delete, class: "has-text-grey-light is-text" do %>
             <i class="fas fa-trash"></i> Delete
           <% end %>
         </p>
