@@ -17,22 +17,42 @@
 <div class="tabs is-boxed">
   <ul>
     <li class="<%= if @status == "all", do: "is-active" %>">
-      <%= link "All", to: database_path(@conn, :index, status: "all") %>
+      <%= link to: database_path(@conn, :index, status: "all") do %>
+        <span>All</span>
+        <span class="tag icon is-rounded">
+          <%= Enum.reduce(@stats, 0, fn({k, v}, acc) -> v + acc end) %>
+        </span>
+      <% end %>
     </li>
     <li class="<%= if @status == "created", do: "is-active" %>">
-      <%= link "Created", to: database_path(@conn, :index, status: "created") %>
+      <%= link to: database_path(@conn, :index, status: "created") do %>
+        Created
+        <span class="tag icon is-rounded"><%= @stats[:created] || 0 %></span>
+      <% end %>
     </li>
     <li class="<%= if @status == "importing", do: "is-active" %>">
-      <%= link "Importing", to: database_path(@conn, :index, status: "importing") %>
+      <%= link to: database_path(@conn, :index, status: "importing") do %>
+        Importing
+        <span class="tag icon is-rounded"><%= @stats[:importing] || 0 %></span>
+      <% end %>
     </li>
     <li class="<%= if @status == "imported", do: "is-active" %>">
-      <%= link "Imported", to: database_path(@conn, :index, status: "imported") %>
+      <%= link to: database_path(@conn, :index, status: "imported") do %>
+        Imported
+        <span class="tag icon is-rounded"><%= @stats[:imported] || 0 %></span>
+      <% end %>
     </li>
     <li class="<%= if @status == "deleting", do: "is-active" %>">
-      <%= link "Deleting", to: database_path(@conn, :index, status: "deleting") %>
+      <%= link to: database_path(@conn, :index, status: "deleting") do %>
+        Deleting
+        <span class="tag icon is-rounded"><%= @stats[:deleting] || 0 %></span>
+      <% end %>
     </li>
     <li class="<%= if @status == "deleted", do: "is-active" %>">
-      <%= link "Deleted", to: database_path(@conn, :index, status: "deleted") %>
+      <%= link to: database_path(@conn, :index, status: "deleted") do %>
+        Deleted
+        <span class="tag icon is-rounded"><%= @stats[:deleted] || 0 %></span>
+      <% end %>
     </li>
   </ul>
 </div>

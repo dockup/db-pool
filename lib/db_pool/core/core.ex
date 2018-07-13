@@ -151,4 +151,22 @@ defmodule DbPool.Core do
   def create_in_bulk() do
     BulkCreator.run()
   end
+
+  @doc """
+  Returns database status by status
+
+  ## Examples
+
+      iex> database_stats()
+      [{"imported", 27}, {"deleted", 29}, {"deleting", 1}]
+  """
+  def database_stats() do
+    Database
+    |> Ecto.Query.select([p], {p.status, count(p.id)})
+    |> Ecto.Query.group_by(:status)
+    |> Repo.all
+    |> Enum.map(fn({k, v}) ->
+      {(k |> String.to_atom), v}
+    end)
+  end
 end

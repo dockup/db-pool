@@ -7,10 +7,11 @@ defmodule DbPoolWeb.DatabaseController do
   def index(conn, params) do
     page = String.to_integer(params["page"] || "1")
     status = params["status"] || "all"
+    stats = Core.database_stats()
 
     databases = Core.list_databases(status, page)
     render(conn, "index.html", databases: databases,
-                               page: page,
+                               page: page, stats: stats,
                                status: status)
   end
 
