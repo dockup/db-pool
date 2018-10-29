@@ -23,8 +23,10 @@ defmodule DbPoolWeb.Router do
     end
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", DbPoolWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", as: :api, alias: DbPoolWeb.API do
+    pipe_through :api
+
+    post "/create", DatabaseController, :create
+    post "/delete", DatabaseController, :delete
+  end
 end

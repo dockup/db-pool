@@ -6,20 +6,23 @@ defmodule DbPool.Core.BulkCreator do
 
   require Logger
 
-  @prefix "dockup"
-
   def run() do
+    prefix = Application.fetch_env!(:db_pool, :db_name)
+
     latest_database =
       Database
       |> Ecto.Query.order_by([desc: :id])
       |> Ecto.Query.first
       |> DbPool.Repo.one
 
-    # TODO: Term `dockup` should be project specific
     current_sequence =
-      latest_database.name
-      |> String.replace(@prefix, "")
-      |> String.to_integer
+      case latest_database do
+        nil -> 0
+        _ ->
+          latest_database.name
+          |> String.replace(prefix, "")
+          |> String.to_integer
+      end
 
     # TODO: The number 10 should be configurable
     # ecto multi to the rescue
@@ -38,7 +41,9 @@ defmodule DbPool.Core.BulkCreator do
   end
 
   defp database_changeset(current_sequence, increment_by) do
-    name = "#{@prefix}#{current_sequence + increment_by}"
+    prefix = Application.fetch_env!(:db_pool, :db_name)
+
+    name = "#{prefix}#{current_sequence + increment_by}"
     attrs = %{name: name, status: "importing"}
     Database.bulk_insert_changeset(%Database{}, attrs)
   end
