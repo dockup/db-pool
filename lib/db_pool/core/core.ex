@@ -11,6 +11,8 @@ defmodule DbPool.Core do
   alias DbPool.Core.Importer
   alias DbPool.Core.Deleter
 
+  require Logger
+
   @limit 25
 
   @doc """
@@ -152,6 +154,17 @@ defmodule DbPool.Core do
     BulkCreator.run()
   end
 
+  def create_in_bulk(callback) do
+    case create_in_bulk() do
+      {:ok, resources} ->
+        resources
+        |> Enum.map(&format_resource/1)
+        |> send_response(callback)
+      {:error, _, %Ecto.Changeset{} = changeset, _} ->
+        Logger.error("Error Occurred while creating databases in bulk, #{inspect changeset}")
+    end
+  end
+
   @doc """
   Returns database status by status
 
@@ -168,5 +181,22 @@ defmodule DbPool.Core do
     |> Enum.map(fn({k, v}) ->
       {(k |> String.to_atom), v}
     end)
+  end
+
+  defp format_resource({_, %Database{} = database}) do
+    %{
+      external_id: "#{database.id}",
+      value: database.name
+    }
+  end
+
+  defp send_response(databases, callback) do
+    opts = [body: Poison.encode!(%{data: databases}),
+            headers: ["Content-Type": "application/json"]]
+
+    case HTTPotion.post(callback, opts) do
+      %HTTPotion.Response{} = response -> Logger.debug("Got Response from #{callback}: #{inspect response}")
+      %HTTPotion.ErrorResponse{message: msg} -> Logger.error("Error Occurred while sending response: #{msg}")
+    end
   end
 end
