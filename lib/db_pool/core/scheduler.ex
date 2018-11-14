@@ -6,8 +6,11 @@ defmodule DbPool.Core.Scheduler do
 
   import Ecto.Query, warn: false
 
-  alias DbPool.Core.Database
-  alias DbPool.Core.Importer
+  alias DbPool.Core.{
+    Database,
+    Importer,
+    Deleter
+  }
 
   @interval_5_mins_msec 5 * 60 * 1000
 
@@ -19,18 +22,19 @@ defmodule DbPool.Core.Scheduler do
   end
 
   def init(_) do
-    Process.send(self(), :import_if_any, [])
+    Process.send(self(), :update_if_any, [])
     {:ok, nil}
   end
 
-  def handle_info(:import_if_any, state) do
+  def handle_info(:update_if_any, state) do
     import_databases_if_any()
+    delete_databases_if_any()
 
     {:noreply, state}
   end
 
-  defp set_import_timer do
-    Process.send_after(self(), :import_if_any, @interval_5_mins_msec)
+  defp set_update_timer do
+    Process.send_after(self(), :update_if_any, @interval_5_mins_msec)
   end
 
   defp import_databases_if_any do
@@ -43,9 +47,25 @@ defmodule DbPool.Core.Scheduler do
 
     if next_database_to_import do
       Importer.start_importing(next_database_to_import)
-      Process.send(self(), :import_if_any, [])
+      Process.send(self(), :update_if_any, [])
     else
-      set_import_timer()
+      set_update_timer()
+    end
+  end
+
+  defp delete_databases_if_any do
+    next_database_to_delete =
+      Database
+      |> Ecto.Query.where(status: "deleting")
+      |> Ecto.Query.order_by([asc: :id])
+      |> Ecto.Query.first
+      |> DbPool.Repo.one
+
+    if next_database_to_delete do
+      Deleter.start_deleting(next_database_to_delete)
+      Process.send(self(), :update_if_any, [])
+    else
+      set_update_timer()
     end
   end
 end

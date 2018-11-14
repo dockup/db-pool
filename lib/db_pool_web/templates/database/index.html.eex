@@ -20,7 +20,7 @@
       <%= link to: database_path(@conn, :index, status: "all") do %>
         <span>All</span>
         <span class="tag icon is-rounded">
-          <%= Enum.reduce(@stats, 0, fn({k, v}, acc) -> v + acc end) %>
+          <%= Enum.reduce(@stats, 0, fn({_k, v}, acc) -> v + acc end) %>
         </span>
       <% end %>
     </li>

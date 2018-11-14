@@ -1,5 +1,5 @@
 defmodule DbPool.Core.BulkCreator do
-  import Ecto.Query
+  import Ecto.Query, warn: false
 
   alias DbPool.Core.Database
   alias DbPool.Repo
