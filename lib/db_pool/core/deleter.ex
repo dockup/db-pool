@@ -5,8 +5,6 @@ defmodule DbPool.Core.Deleter do
   require Logger
 
   def run(%Database{} = database) do
-    # TODO: We can put this task under supervisor later
-    Task.start(__MODULE__, :start_deleting, [database])
     Database.status_changeset(database, "deleting")
   end
 
