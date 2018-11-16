@@ -28,5 +28,6 @@ defmodule DbPoolWeb.Router do
 
     post "/create", DatabaseController, :create
     post "/delete", DatabaseController, :delete
+    get "/items", DatabaseController, :items
   end
 end
