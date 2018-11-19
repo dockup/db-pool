@@ -36,7 +36,7 @@ RUN mix deps.get --only prod && \
 FROM alpine
 MAINTAINER Codemancers <team@codemancers.com>
 
-RUN apk add --no-cache bash libssl1.0 openssh mysql-client
+RUN apk add --no-cache bash libssl1.0 openssh mysql-client wget
 COPY --from=application /db-pool/_build /db-pool/_build
 
 ENV MIX_ENV prod
