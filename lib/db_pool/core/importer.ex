@@ -33,7 +33,7 @@ defmodule DbPool.Core.Importer do
                                                 cd: tmp_directory)
 
     sql_dump_filename_gz = sql_dump_url |> String.split("/") |> List.last
-    {_, 0} = System.cmd("gzip", ["-d", sql_dump_filename_gz],
+    {_, 0} = System.cmd("gzip", ["-d", "-f", sql_dump_filename_gz],
                         stderr_to_stdout: true,
                         cd: tmp_directory)
 
