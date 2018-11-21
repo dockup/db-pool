@@ -29,7 +29,7 @@ defmodule DbPool.Core.Importer do
 
     # download and extract the dump zip file
     File.mkdir_p!(tmp_directory)
-    {_, 0} = System.cmd("wget", ["-r", "-N", sql_dump_url], stderr_to_stdout: true,
+    {_, 0} = System.cmd("wget", ["-N", sql_dump_url], stderr_to_stdout: true,
                                                 cd: tmp_directory)
 
     sql_dump_filename_gz = sql_dump_url |> String.split("/") |> List.last
