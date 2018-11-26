@@ -8,6 +8,7 @@ defmodule DbPool.Core.Scheduler do
 
   alias DbPool.Core.{
     Database,
+    BulkCreator,
     Importer,
     Deleter
   }
@@ -22,9 +23,16 @@ defmodule DbPool.Core.Scheduler do
   end
 
   def init(_) do
+    Process.send(self(), :replenish_if_required, [])
     Process.send(self(), :import_if_any, [])
     Process.send(self(), :delete_if_any, [])
     {:ok, nil}
+  end
+
+  def handle_info(:replenish_if_required, state) do
+    replenish_databases_if_required()
+
+    {:noreply, state}
   end
 
   def handle_info(:import_if_any, state) do
@@ -41,6 +49,19 @@ defmodule DbPool.Core.Scheduler do
 
   defp set_update_timer(event) do
     Process.send_after(self(), event, @interval_5_mins_msec)
+  end
+
+  defp replenish_databases_if_required do
+    databases_imported_or_importing =
+      Database
+      |> Ecto.Query.where([d], d.status in ["importing", "imported"])
+      |> DbPool.Repo.aggregate(:count, :id)
+
+    if databases_imported_or_importing < 10 do
+      BulkCreator.run()
+    end
+
+    set_update_timer(:replenish_if_required)
   end
 
   defp import_databases_if_any do
