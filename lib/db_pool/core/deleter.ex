@@ -13,7 +13,6 @@ defmodule DbPool.Core.Deleter do
     case db_adapter do
       "postgres" -> delete_postgres_db(database)
       "mysql" -> delete_mysql_db(database)
-      _ -> raise "[!] Invalid Database Adapter."
     end
 
     # update status

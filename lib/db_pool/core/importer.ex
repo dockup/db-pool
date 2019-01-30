@@ -33,7 +33,6 @@ defmodule DbPool.Core.Importer do
     case db_adapter do
       "postgres" -> import_postgres_db(database, db_dump_filename, tmp_directory)
       "mysql" -> import_mysql_db(database, db_dump_filename, tmp_directory)
-      _ -> raise "[!] Invalid Database Adapter."
     end
 
     # update status

@@ -6,7 +6,7 @@ defmodule DbPool.Application do
   def start(_type, _args) do
     import Supervisor.Spec
 
-    DbPool.Config.set_configs_from_env()
+    DbPool.init
 
     # Define workers and child supervisors to be supervised
     children = [
