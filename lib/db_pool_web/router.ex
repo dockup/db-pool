@@ -27,6 +27,7 @@ defmodule DbPoolWeb.Router do
     pipe_through :api
 
     post "/create", DatabaseController, :create
-    post "/delete", DatabaseController, :delete
+    post "/delete/:id", DatabaseController, :delete
+    get "/items", DatabaseController, :items
   end
 end

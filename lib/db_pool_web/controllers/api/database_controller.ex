@@ -3,9 +3,9 @@ defmodule DbPoolWeb.API.DatabaseController do
 
   alias DbPool.Core
 
-  def create(conn, %{"callback" => callback}) do
+  def create(conn, _params) do
     Task.start fn ->
-      Core.create_in_bulk(callback)
+      Core.create_in_bulk()
     end
 
     json(conn, :ok)
@@ -16,6 +16,12 @@ defmodule DbPoolWeb.API.DatabaseController do
     {:ok, _database} = Core.delete_database(database)
 
     json(conn, :ok)
+  end
+
+  def items(conn, _params) do
+    databases = Core.get_databases()
+
+    json(conn, databases)
   end
 end
 

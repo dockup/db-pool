@@ -154,15 +154,11 @@ defmodule DbPool.Core do
     BulkCreator.run()
   end
 
-  def create_in_bulk(callback) do
-    case create_in_bulk() do
-      {:ok, resources} ->
-        resources
-        |> Enum.map(&format_resource/1)
-        |> send_response(callback)
-      {:error, _, %Ecto.Changeset{} = changeset, _} ->
-        Logger.error("Error Occurred while creating databases in bulk, #{inspect changeset}")
-    end
+  def get_databases() do
+    Database
+    |> Ecto.Query.where(status: "imported")
+    |> Repo.all
+    |> Enum.map(&format_resource/1)
   end
 
   @doc """
@@ -183,20 +179,10 @@ defmodule DbPool.Core do
     end)
   end
 
-  defp format_resource({_, %Database{} = database}) do
+  defp format_resource(%Database{} = database) do
     %{
       external_id: "#{database.id}",
       value: database.name
     }
-  end
-
-  defp send_response(databases, callback) do
-    opts = [body: Poison.encode!(%{data: databases}),
-            headers: ["Content-Type": "application/json"]]
-
-    case HTTPotion.post(callback, opts) do
-      %HTTPotion.Response{} = response -> Logger.debug("Got Response from #{callback}: #{inspect response}")
-      %HTTPotion.ErrorResponse{message: msg} -> Logger.error("Error Occurred while sending response: #{msg}")
-    end
   end
 end
