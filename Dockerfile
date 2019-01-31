@@ -33,10 +33,10 @@ RUN mix deps.get --only prod && \
 
 # ================================================================================
 # Start from alpine and copy binaries
-FROM alpine
+FROM alpine:3.9
 MAINTAINER Codemancers <team@codemancers.com>
 
-RUN apk add --no-cache bash libssl1.0 openssh mysql-client postgresql postgresql-contrib
+RUN apk add --no-cache bash libssl1.1 openssh mysql-client postgresql postgresql-contrib
 COPY --from=application /db-pool/_build /db-pool/_build
 
 ENV MIX_ENV prod
