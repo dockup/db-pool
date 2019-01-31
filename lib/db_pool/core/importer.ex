@@ -12,8 +12,43 @@ defmodule DbPool.Core.Importer do
     # download database dump using wget
     # import it to database name
     tmp_directory = "/tmp/#{DateTime.utc_now |> DateTime.to_unix}"
-    sql_dump_url = Application.get_env(:db_pool, :sql_dump_url)
+    db_dump_url = Application.get_env(:db_pool, :db_dump_url)
+    db_adapter = Application.get_env(:db_pool, :db_adapter)
 
+    # download and extract the dump zip file
+    File.mkdir_p!(tmp_directory)
+    {_, 0} = System.cmd("wget", [db_dump_url], stderr_to_stdout: true, cd: tmp_directory)
+
+    db_dump_filename_gz = db_dump_url |> String.split("/") |> List.last
+
+    {msg, code} = System.cmd("gzip", ["-d", db_dump_filename_gz], stderr_to_stdout: true, cd: tmp_directory)
+    cond do
+      code == 1 and !String.contains?(msg, "already exists") ->
+        raise "[!] Error Occurred while decompressing db dump"
+      true -> :ok
+    end
+
+    db_dump_filename = db_dump_filename_gz |> String.replace(".gz", "")
+
+    case db_adapter do
+      "postgres" -> import_postgres_db(database, db_dump_filename, tmp_directory)
+      "mysql" -> import_mysql_db(database, db_dump_filename, tmp_directory)
+    end
+
+    # update status
+    database
+    |> Database.status_changeset("imported")
+    |> Repo.update!()
+
+    Logger.info "The database has been imported"
+  end
+
+  defp import_postgres_db(%Database{} = database, filename, dir) do
+    {_, 0} = System.cmd("createdb", [database.name])
+    {_, 0} = System.cmd("psql", ["-d", database.name, "-f", "./#{filename}"], stderr_to_stdout: true, cd: dir)
+  end
+
+  defp import_mysql_db(%Database{} = database, filename, dir) do
     # create database if it doesn't exist
     config = [database: database.name, username: "root"]
     case Ecto.Adapters.MySQL.storage_up(config) do
@@ -27,27 +62,9 @@ defmodule DbPool.Core.Importer do
         raise "The database couldn't be created: #{inspect term}"
     end
 
-    # download and extract the dump zip file
-    File.mkdir_p!(tmp_directory)
-    {_, 0} = System.cmd("wget", ["-N", sql_dump_url], stderr_to_stdout: true,
-                                                cd: tmp_directory)
-
-    sql_dump_filename_gz = sql_dump_url |> String.split("/") |> List.last
-    {_, 0} = System.cmd("gzip", ["-d", "-f", sql_dump_filename_gz],
-                        stderr_to_stdout: true,
-                        cd: tmp_directory)
-
     # import database. Adapter has got no method :(
-    sql_dump_filename = sql_dump_filename_gz |> String.replace(".gz", "")
-    cmd = "mysql --user root #{database.name} < #{sql_dump_filename}"
+    cmd = "mysql --user root #{database.name} < #{filename}"
     {_, 0} = System.cmd("sh", ["-c", cmd], stderr_to_stdout: true,
-                                           cd: tmp_directory)
-
-    # update status
-    database
-    |> Database.status_changeset("imported")
-    |> Repo.update!()
-
-    Logger.info "The database has been imported"
+                                           cd: dir)
   end
 end

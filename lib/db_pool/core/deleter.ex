@@ -9,6 +9,25 @@ defmodule DbPool.Core.Deleter do
   end
 
   def start_deleting(database) do
+    db_adapter = Application.get_env(:db_pool, :db_adapter)
+    case db_adapter do
+      "postgres" -> delete_postgres_db(database)
+      "mysql" -> delete_mysql_db(database)
+    end
+
+    # update status
+    database
+    |> Database.status_changeset("deleted")
+    |> Repo.update!()
+
+    Logger.info "The database has been deleted"
+  end
+
+  defp delete_postgres_db(%Database{} = database) do
+    {_, 0} = System.cmd("dropdb", [database.name])
+  end
+
+  defp delete_mysql_db(%Database{} = database) do
     # delete database if it exists
     config = [database: database.name, username: "root"]
     case Ecto.Adapters.MySQL.storage_down(config) do
@@ -21,12 +40,5 @@ defmodule DbPool.Core.Deleter do
       {:error, term} ->
         raise "The database couldn't be deleted: #{inspect term}"
     end
-
-    # update status
-    database
-    |> Database.status_changeset("deleted")
-    |> Repo.update!()
-
-    Logger.info "The database has been deleted"
   end
 end
