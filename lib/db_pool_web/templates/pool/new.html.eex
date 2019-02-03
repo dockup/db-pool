@@ -1,0 +1,5 @@
+<div class="columns">
+  <div class="column is-half">
+    <%= render "form.html", Map.put(assigns, :action, pool_path(@conn, :create)) %>
+  </div>
+</div>

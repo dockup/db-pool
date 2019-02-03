@@ -9,6 +9,10 @@
       <%= link "New Database", to: database_path(@conn, :new),
           class: "button is-primary is-outlined" %>
     </p>
+    <p class="control">
+      <%= link "Manage Pool", to: pool_path(@conn, :index),
+          class: "button is-primary is-outlined" %>
+    </p>
   </span>
 </h2>
 

@@ -71,6 +71,10 @@ defmodule DbPoolWeb.DatabaseController do
         conn
         |> put_flash(:error, "Failed to create :(")
         |> redirect(to: database_path(conn, :index))
+      {:error, msg} ->
+        conn
+        |> put_flash(:error, msg)
+        |> redirect(to: database_path(conn, :index))
     end
   end
 end

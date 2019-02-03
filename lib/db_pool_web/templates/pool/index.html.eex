@@ -1,0 +1,15 @@
+<div class="content">
+<h4>Pool Info</h4>
+<%= if @pools != [] do %>
+  <%= for pool <- @pools do %>
+    <%= link pool.adapter, to: pool_path(@conn, :show, pool.id) %><br/>
+  <% end %>
+<% else %>
+  No Pools Found!<br/>
+<% end %>
+<br/>
+<div>
+  <%= link "Add", to: pool_path(@conn, :new), class: "button is-primary" %>
+</div>
+</div>
+

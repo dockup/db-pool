@@ -1,0 +1,15 @@
+<div class="content">
+  <h4 class="title">Pool</h4>
+
+  <p><span class="has-text-grey-light	">Adapter: </span><%= @pool.adapter %><p>
+  <p><span class="has-text-grey-light	">Host: </span><%= @pool.host %><p>
+  <p><span class="has-text-grey-light	">Username: </span><%= @pool.username %><p>
+  <p><span class="has-text-grey-light	">Password: </span><%= @pool.password %><p>
+  <p><span class="has-text-grey-light	">Db Dump Url: </span><%= @pool.db_dump_url %><p>
+  <p><span class="has-text-grey-light	">Name Prefix: </span><%= @pool.name_prefix %><p>
+  <p><span class="has-text-grey-light	">Active: </span><%= @pool.active %><p>
+
+  <p>
+    <%= link "Edit", to: pool_path(@conn, :edit, @pool.id), class: "button is-light" %>
+  </p>
+</div>

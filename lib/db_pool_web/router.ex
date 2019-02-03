@@ -18,6 +18,7 @@ defmodule DbPoolWeb.Router do
 
     get "/", DatabaseController, :index
     post "/databases/bulk", DatabaseController, :bulk, as: :database_bulk
+    resources "/pools", PoolController
     resources "/databases", DatabaseController do
       put "/import", DatabaseController, :import_dump, as: :import
     end

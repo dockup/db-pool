@@ -1,0 +1,64 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <div class="field">
+    <%= label f, :adapter, class: "label" %>
+    <div class="control">
+      <%= text_input f, :adapter, class: "input", placeholder: "mysql or postgres" %>
+    </div>
+    <p class="help is-danger"> <%= error_tag f, :adapter %></p>
+  </div>
+
+  <div class="field">
+    <%= label f, :host, class: "label" %>
+    <div class="control">
+      <%= text_input f, :host, class: "input", placeholder: "hostname of the database" %>
+    </div>
+    <p class="help is-danger"> <%= error_tag f, :host %></p>
+  </div>
+
+  <div class="field">
+    <%= label f, :username, class: "label" %>
+    <div class="control">
+      <%= text_input f, :username, class: "input", placeholder: "username of the database"%>
+    </div>
+    <p class="help is-danger"> <%= error_tag f, :username %></p>
+  </div>
+
+  <div class="field">
+    <%= label f, :password, class: "label" %>
+    <div class="control">
+      <%= text_input f, :password, class: "input", placeholder: "password of the database" %>
+    </div>
+    <p class="help is-danger"> <%= error_tag f, :password %></p>
+  </div>
+
+  <div class="field">
+    <%= label f, :db_dump_url, class: "label" %>
+    <div class="control">
+      <%= text_input f, :db_dump_url, class: "input", placeholder: "Url to fetch database dump" %>
+    </div>
+    <p class="help is-danger"> <%= error_tag f, :db_dump_url %></p>
+  </div>
+
+  <div class="field">
+    <%= label f, :name_prefix, class: "label" %>
+    <div class="control">
+      <%= text_input f, :name_prefix, class: "input", placeholder: "prefix for new dbs" %>
+    </div>
+    <p class="help is-danger"> <%= error_tag f, :name_prefix %></p>
+  </div>
+
+  <div class="field">
+    <div class="control">
+      <label class="checkbox">
+        <%= checkbox f, :active, class: "checkbox"%>
+        Active
+      </label>
+    </div>
+  </div>
+  <br/>
+  <div class="field">
+    <div class="control">
+      <%= submit "Submit", class: "button is-primary" %>
+    </div>
+  </div>
+<% end %>

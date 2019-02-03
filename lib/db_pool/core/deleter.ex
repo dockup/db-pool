@@ -1,4 +1,5 @@
 defmodule DbPool.Core.Deleter do
+  alias DbPool.Core
   alias DbPool.Core.Database
   alias DbPool.Repo
 
@@ -9,8 +10,19 @@ defmodule DbPool.Core.Deleter do
   end
 
   def start_deleting(database) do
-    db_adapter = Application.get_env(:db_pool, :db_adapter)
-    case db_adapter do
+    try do
+      do_start_deleting(database)
+      :ok
+    rescue
+      _ ->
+        Logger.error("[!] Error Occurred while deleting database")
+        :error
+    end
+  end
+
+  def do_start_deleting(database) do
+    pool = Core.get_active_pool!()
+    case pool.adapter do
       "postgres" -> delete_postgres_db(database)
       "mysql" -> delete_mysql_db(database)
     end

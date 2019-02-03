@@ -6,6 +6,7 @@ defmodule DbPool.Core do
   import Ecto.Query, warn: false
   alias DbPool.Repo
 
+  alias DbPool.Core.Pool
   alias DbPool.Core.Database
   alias DbPool.Core.BulkCreator
   alias DbPool.Core.Importer
@@ -177,6 +178,36 @@ defmodule DbPool.Core do
     |> Enum.map(fn({k, v}) ->
       {(k |> String.to_atom), v}
     end)
+  end
+
+  def list_pools(), do: Repo.all(Pool)
+
+  def get_pool!(id), do: Repo.get!(Pool, id)
+
+  def get_active_pool() do
+    Pool
+    |> Ecto.Query.where(active: true)
+    |> Repo.one()
+  end
+
+  def get_active_pool!() do
+    Pool
+    |> Ecto.Query.where(active: true)
+    |> Repo.one!()
+  end
+
+  def change_pool(%Pool{} = pool), do: Pool.changeset(pool, %{})
+
+  def create_pool(%Pool{} = pool, attrs \\ %{}) do
+    pool
+    |> Pool.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_pool(%Pool{} = pool, attrs \\ %{}) do
+    pool
+    |> Pool.changeset(attrs)
+    |> Repo.insert()
   end
 
   defp format_resource(%Database{} = database) do

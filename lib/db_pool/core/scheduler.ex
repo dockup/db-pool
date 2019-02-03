@@ -73,8 +73,13 @@ defmodule DbPool.Core.Scheduler do
       |> DbPool.Repo.one
 
     if next_database_to_import do
-      Importer.start_importing(next_database_to_import)
-      Process.send(self(), :import_if_any, [])
+      case Importer.start_importing(next_database_to_import) do
+        :ok ->
+          Process.send(self(), :import_if_any, [])
+
+        :error ->
+          set_update_timer(:import_if_any)
+      end
     else
       set_update_timer(:import_if_any)
     end
@@ -89,8 +94,13 @@ defmodule DbPool.Core.Scheduler do
       |> DbPool.Repo.one
 
     if next_database_to_delete do
-      Deleter.start_deleting(next_database_to_delete)
-      Process.send(self(), :delete_if_any, [])
+      case Deleter.start_deleting(next_database_to_delete) do
+        :ok ->
+          Process.send(self(), :delete_if_any, [])
+
+        :error ->
+          set_update_timer(:delete_if_any)
+      end
     else
       set_update_timer(:delete_if_any)
     end
