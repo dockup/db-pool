@@ -54,6 +54,7 @@
         Active
       </label>
     </div>
+    <p class="help is-danger"> <%= error_tag f, :active %></p>
   </div>
   <br/>
   <div class="field">

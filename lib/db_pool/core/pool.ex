@@ -13,6 +13,8 @@ defmodule DbPool.Core.Pool do
     field :host, :string
     field :password, :string
     field :username, :string
+    field :errored, :boolean, default: false
+    field :error_message, :string
 
     timestamps()
   end
@@ -25,5 +27,10 @@ defmodule DbPool.Core.Pool do
     |> validate_inclusion(:adapter, @supported_adapters)
     |> unique_constraint(:adapter) # only one pool per adapter
     |> unique_constraint(:active) # only one active pool
+  end
+
+  @doc false
+  def error_changeset(pool, attrs) do
+    pool |> cast(attrs, [:errored, :error_message])
   end
 end

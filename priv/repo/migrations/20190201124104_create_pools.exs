@@ -10,11 +10,13 @@ defmodule DbPool.Repo.Migrations.CreatePools do
       add :password, :string
       add :host, :string
       add :active, :boolean, default: false, null: false
+      add :errored, :boolean, default: false, null: false
+      add :error_message, :string
 
       timestamps()
     end
 
     create unique_index(:pools, :adapter)
-    create unique_index(:pools, :active)
+    create unique_index(:pools, :active, where: "active = true")
   end
 end
