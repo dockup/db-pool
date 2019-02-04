@@ -32,9 +32,11 @@ defmodule DbPool.Core.Importer do
       |> Repo.update!()
 
       Logger.info "The database has been imported"
+      Core.remove_errors(pool)
     else
       {msg, error_code} ->
-        Logger.error("[#{error_code}] #{msg}")
+        error_msg = "[#{error_code}] #{msg}"
+        Core.log_error(pool, error_msg)
         :error
     end
   end

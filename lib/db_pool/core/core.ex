@@ -210,6 +210,37 @@ defmodule DbPool.Core do
     |> Repo.insert()
   end
 
+  def get_error() do
+    case get_active_pool() do
+      nil ->
+        {"", 0}
+
+      pool ->
+        {pool.error_message, pool.errored}
+    end
+  end
+
+  def log_error(%Pool{} = pool, error_msg) do
+    Logger.error(error_msg)
+    unless pool.errored do
+      pool
+      |> Pool.error_changeset(%{errored: true, error_message: error_msg})
+      |> Repo.update!()
+    else
+      pool
+    end
+  end
+
+  def remove_errors(%Pool{} = pool) do
+    if pool.errored do
+      pool
+      |> Pool.error_changeset(%{errored: false})
+      |> Repo.update!()
+    else
+      pool
+    end
+  end
+
   defp format_resource(%Database{} = database) do
     %{
       external_id: "#{database.id}",

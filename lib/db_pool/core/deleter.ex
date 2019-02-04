@@ -10,18 +10,20 @@ defmodule DbPool.Core.Deleter do
   end
 
   def start_deleting(database) do
+    pool = Core.get_active_pool!()
     try do
-      do_start_deleting(database)
+      do_start_deleting(database, pool)
+      Core.remove_errors(pool)
       :ok
     rescue
       _ ->
-        Logger.error("[!] Error Occurred while deleting database")
+        error_msg = "[!] Error Occurred while deleting database"
+        Core.log_error(pool, error_msg)
         :error
     end
   end
 
-  def do_start_deleting(database) do
-    pool = Core.get_active_pool!()
+  def do_start_deleting(database, pool) do
     case pool.adapter do
       "postgres" -> delete_postgres_db(database)
       "mysql" -> delete_mysql_db(database)
