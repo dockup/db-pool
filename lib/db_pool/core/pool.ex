@@ -14,7 +14,7 @@ defmodule DbPool.Core.Pool do
     field :password, :string
     field :username, :string
     field :errored, :boolean, default: false
-    field :error_message, :string
+    field :error_message, :string, size: 2048
 
     timestamps()
   end

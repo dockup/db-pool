@@ -11,7 +11,7 @@ defmodule DbPool.Repo.Migrations.CreatePools do
       add :host, :string
       add :active, :boolean, default: false, null: false
       add :errored, :boolean, default: false, null: false
-      add :error_message, :string
+      add :error_message, :string, size: 2048
 
       timestamps()
     end

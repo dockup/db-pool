@@ -224,7 +224,7 @@ defmodule DbPool.Core do
     Logger.error(error_msg)
     unless pool.errored do
       pool
-      |> Pool.error_changeset(%{errored: true, error_message: error_msg})
+      |> Pool.error_changeset(%{errored: true, error_message: String.slice(error_msg, 0..2048)})
       |> Repo.update!()
     else
       pool
