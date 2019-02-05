@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd "$(dirname "$0")"
+../_build/prod/rel/db_pool/bin/db_pool migrate && ../_build/prod/rel/db_pool/bin/db_pool foreground
