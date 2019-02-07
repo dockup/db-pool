@@ -10,7 +10,6 @@ defmodule DbPoolWeb.DatabaseController do
     stats = Core.database_stats()
     databases = Core.list_databases(status, page)
     {error_message, errored} = Core.get_error()
-    IO.inspect Core.get_error()
 
     conn =
       if errored do
