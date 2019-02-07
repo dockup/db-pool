@@ -6,6 +6,7 @@ defmodule DbPool.Core do
   import Ecto.Query, warn: false
   alias DbPool.Repo
 
+  alias DbPool.Core.Pool
   alias DbPool.Core.Database
   alias DbPool.Core.BulkCreator
   alias DbPool.Core.Importer
@@ -101,11 +102,7 @@ defmodule DbPool.Core do
       {:ok, %Database{}}
 
   """
-  def import_dump_to_database(%Database{} = database) do
-    database
-    |> Importer.run()
-    |> Repo.update()
-  end
+  def import_dump_to_database(%Database{} = database), do: Importer.run(database)
 
   @doc """
   Deletes a Database.
@@ -119,11 +116,7 @@ defmodule DbPool.Core do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_database(%Database{} = database) do
-    database
-    |> Deleter.run()
-    |> Repo.update()
-  end
+  def delete_database(%Database{} = database), do: Deleter.run(database)
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking database changes.
@@ -177,6 +170,30 @@ defmodule DbPool.Core do
     |> Enum.map(fn({k, v}) ->
       {(k |> String.to_atom), v}
     end)
+  end
+
+  def get_active_pool(), do: Application.get_env(:db_pool, :pool)
+  def get_active_pool!(), do: Application.fetch_env!(:db_pool, :pool)
+
+  def get_error() do
+    case get_active_pool() do
+      nil ->
+        {"", 0}
+
+      pool ->
+        {pool.error_message, pool.errored}
+    end
+  end
+
+  def log_error(%Pool{} = pool, error_msg) do
+    Logger.error(error_msg)
+    pool = %Pool{pool | errored: true, error_message: error_msg}
+    Application.put_env(:db_pool, :pool, pool)
+  end
+
+  def remove_errors(%Pool{} = pool) do
+    pool = %Pool{pool | errored: false}
+    Application.put_env(:db_pool, :pool, pool)
   end
 
   defp format_resource(%Database{} = database) do

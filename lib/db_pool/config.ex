@@ -1,6 +1,8 @@
 defmodule DbPool.Config do
   def set_configs_from_env do
     for {env_var, config_key, type} <- configs() do
+      value = System.get_env(env_var)
+      unless value, do: raise "[!] You need to provide #{env_var}"
       set_config(System.get_env(env_var), config_key, type)
     end
   end
@@ -9,7 +11,10 @@ defmodule DbPool.Config do
     [
       {"DB_POOL_DB_DUMP_URL", :db_dump_url, :string},
       {"DB_POOL_DB_ADAPTER", :db_adapter, :string},
-      {"DB_POOL_DB_NAME", :db_name, :string}
+      {"DB_POOL_DB_NAME_PREFIX", :db_name_prefix, :string},
+      {"DB_POOL_DB_HOST", :db_host, :string},
+      {"DB_POOL_DB_USERNAME", :db_username, :string},
+      {"DB_POOL_DB_PASSWORD", :db_password, :string}
     ]
   end
 
