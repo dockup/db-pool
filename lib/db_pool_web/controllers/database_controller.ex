@@ -13,7 +13,7 @@ defmodule DbPoolWeb.DatabaseController do
     IO.inspect Core.get_error()
 
     conn =
-      if errored != 0 do
+      if errored do
         put_flash(conn, :error, error_message)
       else
         conn
