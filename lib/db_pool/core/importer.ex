@@ -17,12 +17,11 @@ defmodule DbPool.Core.Importer do
   def start_importing(database) do
     # download database dump using wget
     # import it to database name
-    tmp_directory = "/tmp/#{DateTime.utc_now |> DateTime.to_unix}"
     pool = Core.get_active_pool!()
     db_dump_url = pool.dump_url
 
-    with :ok <- File.mkdir_p!(tmp_directory),
-         {_, 0} <- System.cmd("wget", [db_dump_url], stderr_to_stdout: true, cd: tmp_directory),
+    with tmp_directory <- System.tmp_dir!(),
+         {_, 0} <- System.cmd("wget", ["-N", db_dump_url], stderr_to_stdout: true, cd: tmp_directory),
          db_dump_filename_gz <- db_dump_url |> String.split("/") |> List.last(),
          {_, 0} = System.cmd("gzip", ["-f", "-d", db_dump_filename_gz], stderr_to_stdout: true, cd: tmp_directory),
          db_dump_filename <- db_dump_filename_gz |> String.replace(".gz", ""),

@@ -13,7 +13,7 @@ defmodule DbPool.Core.Scheduler do
     Deleter
   }
 
-  @interval_5_mins_msec 30 * 1000 # 5 * 60 * 1000
+  @interval_5_mins_msec 5 * 60 * 1000
 
   @doc """
   Starts a Scheduler and kicks off the loop
