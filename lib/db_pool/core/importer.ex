@@ -22,9 +22,8 @@ defmodule DbPool.Core.Importer do
 
     with tmp_directory <- System.tmp_dir!(),
          {_, 0} <- System.cmd("wget", ["-N", db_dump_url], stderr_to_stdout: true, cd: tmp_directory),
-         db_dump_filename_gz <- db_dump_url |> String.split("/") |> List.last(),
-         {_, 0} = System.cmd("gzip", ["-f", "-d", db_dump_filename_gz], stderr_to_stdout: true, cd: tmp_directory),
-         db_dump_filename <- db_dump_filename_gz |> String.replace(".gz", ""),
+         db_dump_filename_from_url <- db_dump_url |> String.split("/") |> List.last(),
+         {:ok, db_dump_filename} <- maybe_extract_file(db_dump_filename_from_url, tmp_directory),
          :ok <- import_db(pool, database, db_dump_filename, tmp_directory)
     do
       # update status
@@ -40,6 +39,19 @@ defmodule DbPool.Core.Importer do
         Core.log_error(pool, error_msg)
         :error
     end
+  end
+
+  defp maybe_extract_file(db_dump_filename_from_url, tmp_directory) do
+    extension = db_dump_filename_from_url |> String.split(".") |> List.last
+    case extension do
+      "gz" ->
+         {_, 0} = System.cmd("gzip", ["-f", "-d", db_dump_filename_from_url], stderr_to_stdout: true, cd: tmp_directory)
+
+      _ ->
+        Logger.info "No need to extract"
+    end
+
+    {:ok, db_dump_filename_from_url |> String.replace(".gz", "")}
   end
 
   defp import_db(%Pool{} = pool, database, db_dump_filename, tmp_directory) do
