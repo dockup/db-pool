@@ -17,18 +17,28 @@ defmodule DbPool.Core.Importer do
 
     # download and extract the dump zip file
     File.mkdir_p!(tmp_directory)
-    {_, 0} = System.cmd("wget", [db_dump_url], stderr_to_stdout: true, cd: tmp_directory)
+    {_, 0} = System.cmd("wget", [db_dump_url], stderr_to_stdout: true,
+                        cd: tmp_directory)
 
-    db_dump_filename_gz = db_dump_url |> String.split("/") |> List.last
+    db_dump_filename_from_url = db_dump_url |> String.split("/") |> List.last
 
-    {msg, code} = System.cmd("gzip", ["-d", db_dump_filename_gz], stderr_to_stdout: true, cd: tmp_directory)
-    cond do
-      code == 1 and !String.contains?(msg, "already exists") ->
-        raise "[!] Error Occurred while decompressing db dump"
-      true -> :ok
+    extension = db_dump_filename_from_url |> String.split(".") |> List.last
+    case extension do
+      "gz" ->
+        {msg, code} = System.cmd("gzip", ["-d", db_dump_filename_from_url],
+                                 stderr_to_stdout: true,
+                                 cd: tmp_directory)
+        cond do
+          code == 1 and !String.contains?(msg, "already exists") ->
+            raise "[!] Error Occurred while decompressing db dump"
+          true -> :ok
+        end
+
+      _ ->
+        Logger.info "No need to extract"
     end
 
-    db_dump_filename = db_dump_filename_gz |> String.replace(".gz", "")
+    db_dump_filename = db_dump_filename_from_url |> String.replace(".gz", "")
 
     case db_adapter do
       "postgres" -> import_postgres_db(database, db_dump_filename, tmp_directory)
