@@ -8,8 +8,16 @@ defmodule DbPoolWeb.DatabaseController do
     page = String.to_integer(params["page"] || "1")
     status = params["status"] || "all"
     stats = Core.database_stats()
-
     databases = Core.list_databases(status, page)
+    {error_message, errored} = Core.get_error()
+
+    conn =
+      if errored do
+        put_flash(conn, :error, error_message)
+      else
+        conn
+      end
+
     render(conn, "index.html", databases: databases,
                                page: page, stats: stats,
                                status: status)
@@ -70,6 +78,10 @@ defmodule DbPoolWeb.DatabaseController do
       {:error, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(:error, "Failed to create :(")
+        |> redirect(to: database_path(conn, :index))
+      {:error, msg} ->
+        conn
+        |> put_flash(:error, msg)
         |> redirect(to: database_path(conn, :index))
     end
   end

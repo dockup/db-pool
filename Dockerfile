@@ -36,7 +36,7 @@ RUN mix deps.get --only prod && \
 FROM alpine:3.8
 MAINTAINER Codemancers <team@codemancers.com>
 
-RUN apk add --no-cache bash libssl1.0 openssh mysql-client postgresql postgresql-contrib
+RUN apk add --no-cache bash libssl1.0 wget gzip openssh mysql-client postgresql postgresql-contrib
 COPY --from=application /db-pool/_build /db-pool/_build
 COPY --from=application /db-pool/scripts /db-pool/scripts
 

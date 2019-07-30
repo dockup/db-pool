@@ -1,26 +1,38 @@
 defmodule DbPool.Core.BulkCreator do
   import Ecto.Query, warn: false
 
+  alias DbPool.Core
+  alias DbPool.Core.Pool
   alias DbPool.Core.Database
   alias DbPool.Repo
 
   require Logger
 
   def run() do
-    prefix = Application.fetch_env!(:db_pool, :db_name)
+    case Core.get_active_pool() do
+      nil ->
+        Logger.warn("[!] No Pool Found. Won't be creating any databases.")
+        {:error, "No Pool Found. Won't be creating any databases"}
+      pool ->
+        do_run(pool)
+        :ok
+    end
+  end
 
+  def do_run(%Pool{} = pool) do
     latest_database =
       Database
-      |> Ecto.Query.order_by([desc: :id])
-      |> Ecto.Query.first
-      |> DbPool.Repo.one
+      |> where([d], like(d.name, ^pool.name_prefix))
+      |> order_by([desc: :id])
+      |> first()
+      |> Repo.one()
 
     current_sequence =
       case latest_database do
         nil -> 0
         _ ->
           latest_database.name
-          |> String.replace(prefix, "")
+          |> String.replace(pool.name_prefix, "")
           |> String.to_integer
       end
 
@@ -41,9 +53,9 @@ defmodule DbPool.Core.BulkCreator do
   end
 
   defp database_changeset(current_sequence, increment_by) do
-    prefix = Application.fetch_env!(:db_pool, :db_name)
+    pool = Core.get_active_pool!()
 
-    name = "#{prefix}#{current_sequence + increment_by}"
+    name = "#{pool.name_prefix}#{current_sequence + increment_by}"
     attrs = %{name: name, status: "importing"}
     Database.bulk_insert_changeset(%Database{}, attrs)
   end
