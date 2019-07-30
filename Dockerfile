@@ -38,9 +38,10 @@ MAINTAINER Codemancers <team@codemancers.com>
 
 RUN apk add --no-cache bash libssl1.0 openssh mysql-client postgresql postgresql-contrib
 COPY --from=application /db-pool/_build /db-pool/_build
+COPY --from=application /db-pool/scripts /db-pool/scripts
 
 ENV MIX_ENV prod
 ENV PORT 4000
 
 EXPOSE 4000
-CMD /db-pool/_build/prod/rel/db_pool/bin/db_pool foreground
+CMD /db-pool/scripts/run_release
