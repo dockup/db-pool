@@ -54,7 +54,12 @@ defmodule DbPool.Core.Importer do
   end
 
   defp import_postgres_db(%Database{} = database, filename, dir) do
-    {_, 0} = System.cmd("createdb", [database.name])
+    case System.cmd("createdb", [database.name]) do
+      {_, 0} ->
+        Logger.info("The database has been created")
+      {_, 1} ->
+        Logger.info("The database couldn't be created or it already exists")
+    end
     {_, 0} = System.cmd("psql", ["-d", database.name, "-f", "./#{filename}"], stderr_to_stdout: true, cd: dir)
   end
 

@@ -18,6 +18,13 @@ defmodule DbPoolWeb.API.DatabaseController do
     json(conn, :ok)
   end
 
+  def reimport(conn, %{"id" => id}) do
+    database = Core.get_database!(id)
+    { :ok, _database } = Core.import_dump_to_database(database)
+
+    json(conn, :ok)
+  end
+
   def items(conn, _params) do
     databases = Core.get_databases()
 

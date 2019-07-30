@@ -64,12 +64,16 @@
     </span>
     <%= database.name %>
     <span class="field is-grouped is-pulled-right">
-      <%= if (database.status == "created") do %>
+      <%= if (database.status in ["created", "imported"]) do %>
         <p class="control">
           <%= link to: database_import_path(@conn, :import_dump, database,
                                             status: "importing", page: @page),
                    method: :put, class: "has-text-grey-light is-text" do %>
+            <%= if database.status == "created" do %>
             <i class="fas fa-file-import"></i> Import
+            <% else %>
+            <i class="fas fa-redo"></i> Reimport
+            <% end %>
           <% end %>
         </p>
       <% end %>
